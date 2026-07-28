@@ -7,4 +7,9 @@ package com.spektrsoyuz.configadapter;
  */
 public final class Constants {
 
+    // Constructor
+    private Constants() {
+        throw new UnsupportedOperationException("This class cannot be instantiated.");
+    }
+
 }
