@@ -9,6 +9,7 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -44,16 +45,27 @@ public final class ConfigWrapper {
     public void load() {
         // Check if file is missing at path
         if (Files.notExists(this.path)) {
-            // Create file if missing
             this.plugin.getComponentLogger().info("Config file '{}' not found, creating it", this.fileName);
-            this.plugin.saveResource(this.fileName, false);
+
+            if (this.plugin.getResource(this.fileName) != null) {
+                // Create default file
+                this.plugin.saveResource(this.fileName, false);
+            } else {
+                // Create an empty file
+                try {
+                    Files.createFile(this.path);
+                } catch (final IOException e) {
+                    this.plugin.getComponentLogger().error("Failed to create config file '{}'", this.fileName, e);
+                    return;
+                }
+            }
         }
 
         // Load the config node using the loader
         try {
             this.node = this.loader.load();
         } catch (final ConfigurateException e) {
-            this.plugin.getComponentLogger().error("Failed to load config '{}'", this.fileName, e);
+            this.plugin.getComponentLogger().error("Failed to load config file '{}'", this.fileName, e);
 
             if (this.node == null) {
                 // Create node if missing
@@ -70,7 +82,7 @@ public final class ConfigWrapper {
         try {
             this.loader.save(this.node);
         } catch (final ConfigurateException e) {
-            this.plugin.getComponentLogger().error("Failed to save config '{}'", this.fileName, e);
+            this.plugin.getComponentLogger().error("Failed to save config file '{}'", this.fileName, e);
         }
     }
 

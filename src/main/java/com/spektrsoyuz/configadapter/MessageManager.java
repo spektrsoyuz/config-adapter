@@ -22,58 +22,64 @@ public final class MessageManager {
 
     private final ConfigManager configManager;
     private final String configKey;
+    private final MiniMessage miniMessage;
+
+    private String prefix;
 
     // Constructor
     public MessageManager(
             final ConfigManager configManager,
+            final MiniMessage miniMessage,
             final String configKey
     ) {
         this.configManager = configManager;
+        this.miniMessage = miniMessage;
         this.configKey = configKey;
     }
 
     // Returns a component from the message config
     public @NotNull Component getMessage(
             final String key,
-            final MiniMessage miniMessage,
             final TagResolver... resolvers
     ) {
         // Retrieve the message prefix from the config
-        final String prefix = this.configManager.getConfig(this.configKey, "prefix", String.class, "");
+        if (this.prefix == null) this.cachePrefix();
 
         // Retrieve the message from the config
         final String rawMessage = this.configManager.getConfig(this.configKey, key, String.class, null);
+        if (rawMessage == null) return Component.empty();
 
-        final List<TagResolver> tagResolvers = new ArrayList<>(List.of(resolvers));
-        tagResolvers.add(Placeholder.parsed("prefix", prefix));
+        final TagResolver tags = TagResolver.builder()
+                .resolvers(resolvers)
+                .resolver(Placeholder.parsed("prefix", this.prefix))
+                .build();
 
         // Deserialize the message
-        return miniMessage.deserialize(rawMessage, tagResolvers.toArray(TagResolver[]::new))
+        return this.miniMessage.deserialize(rawMessage, tags)
                 .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 
     // Returns a list of components from the message config
     public @NotNull List<Component> getMessageList(
             final String key,
-            final MiniMessage miniMessage,
             final TagResolver... resolvers
     ) {
         // Retrieve the message prefix from the config
-        final String prefix = this.configManager.getConfig(this.configKey, "prefix", String.class, "");
+        if (this.prefix == null) this.cachePrefix();
 
         // Retrieve the messages from the config
         final List<Component> components = new ArrayList<>();
         final List<String> messages = this.configManager.getList(this.configKey, key, String.class);
 
         if (!(messages.isEmpty())) {
-            final List<TagResolver> tagResolvers = new ArrayList<>(List.of(resolvers));
-            tagResolvers.add(Placeholder.parsed("prefix", prefix));
-
-            final TagResolver[] resolverArray = tagResolvers.toArray(TagResolver[]::new);
+            final TagResolver tags = TagResolver.builder()
+                    .resolvers(resolvers)
+                    .resolver(Placeholder.parsed("prefix", this.prefix))
+                    .build();
 
             for (final String message : messages) {
                 // Deserialize the message
-                components.add(miniMessage.deserialize(message, resolverArray)
+                components.add(this.miniMessage.deserialize(message, tags)
                         .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
             }
         }
@@ -86,6 +92,11 @@ public final class MessageManager {
             final String key
     ) {
         return this.configManager.getConfig(this.configKey, key, String.class, "");
+    }
+
+    // Caches the message prefix
+    private void cachePrefix() {
+        this.prefix = this.configManager.getConfig(this.configKey, "prefix", String.class, "");
     }
 
 }
