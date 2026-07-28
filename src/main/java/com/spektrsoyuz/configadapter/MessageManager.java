@@ -24,8 +24,6 @@ public final class MessageManager {
     private final String configKey;
     private final MiniMessage miniMessage;
 
-    private String prefix;
-
     // Constructor
     public MessageManager(
             final ConfigManager configManager,
@@ -43,7 +41,7 @@ public final class MessageManager {
             final TagResolver... resolvers
     ) {
         // Retrieve the message prefix from the config
-        if (this.prefix == null) this.cachePrefix();
+        final String prefix = this.getPrefix();
 
         // Retrieve the message from the config
         final String rawMessage = this.configManager.getConfig(this.configKey, key, String.class, null);
@@ -51,7 +49,7 @@ public final class MessageManager {
 
         final TagResolver tags = TagResolver.builder()
                 .resolvers(resolvers)
-                .resolver(Placeholder.parsed("prefix", this.prefix))
+                .resolver(Placeholder.parsed("prefix", prefix))
                 .build();
 
         // Deserialize the message
@@ -65,7 +63,7 @@ public final class MessageManager {
             final TagResolver... resolvers
     ) {
         // Retrieve the message prefix from the config
-        if (this.prefix == null) this.cachePrefix();
+        final String prefix = this.getPrefix();
 
         // Retrieve the messages from the config
         final List<Component> components = new ArrayList<>();
@@ -74,7 +72,7 @@ public final class MessageManager {
         if (!(messages.isEmpty())) {
             final TagResolver tags = TagResolver.builder()
                     .resolvers(resolvers)
-                    .resolver(Placeholder.parsed("prefix", this.prefix))
+                    .resolver(Placeholder.parsed("prefix", prefix))
                     .build();
 
             for (final String message : messages) {
@@ -94,9 +92,9 @@ public final class MessageManager {
         return this.configManager.getConfig(this.configKey, key, String.class, "");
     }
 
-    // Caches the message prefix
-    private void cachePrefix() {
-        this.prefix = this.configManager.getConfig(this.configKey, "prefix", String.class, "");
+    // Returns the message prefix from the message config
+    public String getPrefix() {
+        return this.configManager.getConfig(this.configKey, "prefix", String.class, "");
     }
 
 }
