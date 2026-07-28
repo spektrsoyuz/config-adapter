@@ -4,7 +4,7 @@ plugins {
     id("io.freefair.lombok") version "9.5.0"
 }
 
-group = "com.spektrsoyuz.configadapter"
+group = "com.spektrsoyuz"
 version = "1.0.0"
 
 repositories {
