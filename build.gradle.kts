@@ -40,8 +40,8 @@ publishing {
             url = uri("https://maven.pkg.github.com/spektrsoyuz/config-adapter")
 
             credentials {
-                System.getenv("REPOSITORY_USER")
-                System.getenv("REPOSITORY_TOKEN")
+                username = System.getenv("REPOSITORY_USER")
+                password = System.getenv("REPOSITORY_TOKEN")
             }
         }
     }
