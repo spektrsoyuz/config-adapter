@@ -45,7 +45,7 @@ public final class MessageManager {
 
         // Retrieve the message from the config
         final String rawMessage = this.configManager.get(this.configKey, key, String.class, null);
-        if (rawMessage == null) return Component.empty();
+        if (rawMessage == null) return Component.text(key);
 
         final TagResolver tags = TagResolver.builder()
                 .resolvers(resolvers)
