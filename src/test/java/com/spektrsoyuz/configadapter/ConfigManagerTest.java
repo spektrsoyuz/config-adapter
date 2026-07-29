@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -67,7 +68,7 @@ class ConfigManagerTest {
         // Save a value to the config
         this.configManager.set(configKey, "key", String.class, "value");
 
-        // Retrieve the value
+        // Get the value
         final String value = this.configManager.get(configKey, "key", String.class, null);
         assertEquals("value", value);
     }
@@ -83,12 +84,86 @@ class ConfigManagerTest {
         final List<String> expectedList = List.of("value1", "value2");
         this.configManager.setList(configKey, "key", String.class, List.of("value1", "value2"));
 
-        // Retrieve the list
+        // Get the list
         final List<String> list = this.configManager.getList(configKey, "key", String.class);
-
         assertNotNull(list);
         assertEquals(expectedList.size(), list.size());
         assertTrue(list.containsAll(expectedList));
+    }
+
+    @Test
+    void testDefault() {
+        // Load config
+        final String configKey = "config.conf";
+        this.configManager.addConfig(configKey);
+        this.configManager.load();
+
+        // Attempt to get the value
+        final String value = this.configManager.get(configKey, "key", String.class, "default");
+        assertEquals("default", value);
+    }
+
+    @Test
+    void testDefaultList() {
+        // Load config
+        final String configKey = "config.conf";
+        this.configManager.addConfig(configKey);
+        this.configManager.load();
+
+        // Attempt to get the list
+        final List<String> list = this.configManager.getList(configKey, "key", String.class);
+        assertNotNull(list);
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    void testMissing() {
+        final String configKey = "config.conf";
+
+        // Attempt to get the value
+        final String value = this.configManager.get(configKey, "key", String.class, null);
+        assertNull(value);
+    }
+
+    @Test
+    void testMissingList() {
+        final String configKey = "config.conf";
+
+        // Attempt to get the list
+        final List<String> list = this.configManager.getList(configKey, "key", String.class);
+        assertNotNull(list);
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    void testLoadAndSave() throws IOException {
+        // Add configs
+        final String configKey = "config.conf";
+        final String messagesKey = "messages.conf";
+
+        this.configManager.addConfig(configKey);
+        this.configManager.addConfig(messagesKey);
+        this.configManager.load();
+
+        // Modify the configs
+        this.configManager.set(configKey, "key", String.class, "value");
+        this.configManager.set(messagesKey, "key", String.class, "value");
+
+        // Save the configs
+        this.configManager.save();
+
+        // Verify the files were modified
+        final String configContent = Files.readString(this.tempDir.resolve(configKey));
+        final String messagesContent = Files.readString(this.tempDir.resolve(messagesKey));
+
+        assertTrue(configContent.contains("value"));
+        assertTrue(messagesContent.contains("value"));
+
+        // Get the values
+        final String configValue = this.configManager.get(configKey, "key", String.class, null);
+        final String messagesValue = this.configManager.get(messagesKey, "key", String.class, null);
+        assertEquals("value", configValue);
+        assertEquals("value", messagesValue);
     }
 
 }
