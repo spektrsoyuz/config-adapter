@@ -25,11 +25,11 @@ public abstract class AbstractConfigController {
     // Constructor
     public AbstractConfigController(
             final JavaPlugin plugin,
-            final String configKey
+            final String messageConfigKey
     ) {
         this.plugin = plugin;
         this.configManager = new ConfigManager(plugin);
-        this.messageManager = new MessageManager(this.configManager, MiniMessage.miniMessage(), configKey);
+        this.messageManager = new MessageManager(this.configManager, MiniMessage.miniMessage(), messageConfigKey);
     }
 
     // Initializes the controller

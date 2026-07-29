@@ -15,14 +15,28 @@ repositories {
     }
 }
 
+val paperApi = "io.papermc.paper:paper-api:26.2.build.+"
+
 dependencies {
     implementation("org.spongepowered:configurate-hocon:4.3.0-SNAPSHOT")
 
-    compileOnly("io.papermc.paper:paper-api:26.2.build.+")
+    compileOnly(paperApi)
+
+    testImplementation("org.junit.jupiter:junit-jupiter:6.1.2")
+    testImplementation("org.mockito:mockito-core:5.23.0")
+    testImplementation(paperApi)
+
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(25))
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
+
+    maxHeapSize = "1G"
 }
 
 publishing {
