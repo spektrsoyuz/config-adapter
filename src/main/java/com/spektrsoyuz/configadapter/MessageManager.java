@@ -44,7 +44,7 @@ public final class MessageManager {
         final String prefix = this.getPrefix();
 
         // Retrieve the message from the config
-        final String rawMessage = this.configManager.getConfig(this.configKey, key, String.class, null);
+        final String rawMessage = this.configManager.get(this.configKey, key, String.class, null);
         if (rawMessage == null) return Component.empty();
 
         final TagResolver tags = TagResolver.builder()
@@ -89,12 +89,12 @@ public final class MessageManager {
     public String getString(
             final String key
     ) {
-        return this.configManager.getConfig(this.configKey, key, String.class, "");
+        return this.configManager.get(this.configKey, key, String.class, "");
     }
 
     // Returns the message prefix from the message config
     public String getPrefix() {
-        return this.configManager.getConfig(this.configKey, "prefix", String.class, "");
+        return this.configManager.get(this.configKey, "prefix", String.class, "");
     }
 
 }

@@ -58,7 +58,7 @@ public final class ConfigManager {
     }
 
     // Returns a value from a config
-    public <T> T getConfig(
+    public <T> T get(
             final String configKey,
             final String nodeName,
             final Class<T> clazz,
@@ -74,7 +74,7 @@ public final class ConfigManager {
                     ? config
                     : defaultInstance;
         } catch (final SerializationException e) {
-            this.logger.error("Failed to load '{}' config from '{}', using default values", nodeName, configKey, e);
+            this.logger.error("Failed to load '{}' from '{}', using default value", nodeName, configKey, e);
             return defaultInstance;
         }
     }
@@ -95,13 +95,13 @@ public final class ConfigManager {
                     ? list
                     : Collections.emptyList();
         } catch (final SerializationException e) {
-            this.logger.error("Failed to load list '{}' from '{}'", nodeName, configKey, e);
+            this.logger.error("Failed to load '{}' from '{}', using default value", nodeName, configKey, e);
             return Collections.emptyList();
         }
     }
 
-    // Saves a value to a config
-    public <T> void saveConfig(
+    // Sets a value in a config
+    public <T> void set(
             final String configKey,
             final String nodeName,
             final Class<T> clazz,
@@ -112,9 +112,25 @@ public final class ConfigManager {
 
         try {
             wrapper.getNode().node(nodeName).set(clazz, instance);
-            wrapper.save();
         } catch (final SerializationException e) {
-            this.logger.error("Failed to save '{}' config to '{}'", nodeName, configKey, e);
+            this.logger.error("Failed to save '{}' to '{}'", nodeName, configKey, e);
+        }
+    }
+
+    // Sets a list of values in a config
+    public <T> void setList(
+            final String configKey,
+            final String nodeName,
+            final Class<T> clazz,
+            final List<T> instance
+    ) {
+        final ConfigWrapper wrapper = this.configs.get(configKey);
+        if (wrapper == null) return;
+
+        try {
+            wrapper.getNode().node(nodeName).setList(clazz, instance);
+        } catch (final SerializationException e) {
+            this.logger.error("Failed to save '{}' to '{}'", nodeName, configKey, e);
         }
     }
 
