@@ -47,17 +47,22 @@ public final class ConfigWrapper {
         if (Files.notExists(this.path)) {
             this.plugin.getComponentLogger().info("Config file '{}' not found, creating it", this.fileName);
 
-            if (this.plugin.getResource(this.fileName) != null) {
-                // Create default file
-                this.plugin.saveResource(this.fileName, false);
-            } else {
-                // Create an empty file
-                try {
-                    Files.createFile(this.path);
-                } catch (final IOException e) {
-                    this.plugin.getComponentLogger().error("Failed to create config file '{}'", this.fileName, e);
-                    return;
+            try {
+                // Create parent directories if missing
+                if (this.path.getParent() != null) {
+                    Files.createDirectories(this.path.getParent());
                 }
+
+                if (this.plugin.getResource(this.fileName) != null) {
+                    // Create default file
+                    this.plugin.saveResource(this.fileName, false);
+                } else {
+                    // Create an empty file
+                    Files.createFile(this.path);
+                }
+            } catch (final IOException e) {
+                this.plugin.getComponentLogger().error("Failed to create config file '{}'", this.fileName, e);
+                return;
             }
         }
 

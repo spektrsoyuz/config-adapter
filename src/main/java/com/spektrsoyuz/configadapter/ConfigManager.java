@@ -67,14 +67,16 @@ public final class ConfigManager {
         final ConfigWrapper wrapper = this.configs.get(configKey);
         if (wrapper == null) return defaultInstance;
 
+        final Object[] path = nodeName.split("\\.");
+
         try {
-            final T config = wrapper.getNode().node(nodeName).get(clazz);
+            final T config = wrapper.getNode().node(path).get(clazz);
 
             return config != null
                     ? config
                     : defaultInstance;
         } catch (final SerializationException e) {
-            this.logger.error("Failed to load '{}' from '{}', using default value", nodeName, configKey, e);
+            this.logger.error("Failed to load '{}' from '{}', using default value", path, configKey, e);
             return defaultInstance;
         }
     }
@@ -88,14 +90,16 @@ public final class ConfigManager {
         final ConfigWrapper wrapper = this.configs.get(configKey);
         if (wrapper == null) return Collections.emptyList();
 
+        final Object[] path = nodeName.split("\\.");
+
         try {
-            final List<T> list = wrapper.getNode().node(nodeName).getList(clazz);
+            final List<T> list = wrapper.getNode().node(path).getList(clazz);
 
             return list != null
                     ? list
                     : Collections.emptyList();
         } catch (final SerializationException e) {
-            this.logger.error("Failed to load '{}' from '{}', using default value", nodeName, configKey, e);
+            this.logger.error("Failed to load '{}' from '{}', using default value", path, configKey, e);
             return Collections.emptyList();
         }
     }
@@ -110,10 +114,12 @@ public final class ConfigManager {
         final ConfigWrapper wrapper = this.configs.get(configKey);
         if (wrapper == null) return;
 
+        final Object[] path = nodeName.split("\\.");
+
         try {
-            wrapper.getNode().node(nodeName).set(clazz, instance);
+            wrapper.getNode().node(path).set(clazz, instance);
         } catch (final SerializationException e) {
-            this.logger.error("Failed to save '{}' to '{}'", nodeName, configKey, e);
+            this.logger.error("Failed to save '{}' to '{}'", path, configKey, e);
         }
     }
 
@@ -127,10 +133,12 @@ public final class ConfigManager {
         final ConfigWrapper wrapper = this.configs.get(configKey);
         if (wrapper == null) return;
 
+        final Object[] path = nodeName.split("\\.");
+
         try {
-            wrapper.getNode().node(nodeName).setList(clazz, instance);
+            wrapper.getNode().node(path).setList(clazz, instance);
         } catch (final SerializationException e) {
-            this.logger.error("Failed to save '{}' to '{}'", nodeName, configKey, e);
+            this.logger.error("Failed to save '{}' to '{}'", path, configKey, e);
         }
     }
 
