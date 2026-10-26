@@ -32,9 +32,6 @@ public abstract class AbstractConfigController {
         this.messageManager = new MessageManager(this.configManager, MiniMessage.miniMessage(), messageConfigKey);
     }
 
-    // Initializes the controller
-    public abstract void init();
-
     // Returns a component from the message config
     public @NotNull Component getMessage(
             final String key,
@@ -57,5 +54,8 @@ public abstract class AbstractConfigController {
     ) {
         return this.messageManager.getString(key);
     }
+
+    // Initializes the controller
+    public abstract void init();
 
 }

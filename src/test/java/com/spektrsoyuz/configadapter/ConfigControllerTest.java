@@ -58,7 +58,7 @@ class ConfigControllerTest {
                 """);
 
         // Initialize the mock controller
-        this.controller = new ConfigController(plugin, messagesKey);
+        this.controller = new ConfigController(plugin);
         this.controller.init();
     }
 

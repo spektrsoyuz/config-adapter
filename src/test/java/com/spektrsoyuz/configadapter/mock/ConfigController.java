@@ -15,16 +15,16 @@ public final class ConfigController extends AbstractConfigController {
 
     // Constructor
     public ConfigController(
-            final JavaPlugin plugin,
-            final String messageConfigKey
+            final JavaPlugin plugin
     ) {
-        super(plugin, messageConfigKey);
+        super(plugin, "messages.conf");
     }
 
     @Override
     public void init() {
         this.configManager.addConfig("config.conf");
         this.configManager.addConfig("messages.conf");
+
         this.configManager.load();
     }
 
