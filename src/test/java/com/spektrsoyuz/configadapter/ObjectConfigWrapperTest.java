@@ -42,7 +42,7 @@ class ObjectConfigWrapperTest {
     }
 
     @Test
-    void testLoad() {
+    void testLoad() throws IOException {
         final ObjectConfigWrapper<ExampleConfig> configWrapper =
                 new ObjectConfigWrapper<>(this.plugin, "config.conf", ExampleConfig.class);
 
@@ -53,6 +53,27 @@ class ObjectConfigWrapperTest {
         assertNotNull(configWrapper.getNode());
         assertNotNull(configWrapper.getConfig());
         assertEquals("default", configWrapper.getConfig().name);
+
+        final String content = Files.readString(this.tempDir.resolve("config.conf"));
+        assertTrue(content.contains("name"));
+        assertTrue(content.contains("default"));
+    }
+
+    @Test
+    void testLoadPopulatesBlankFile() throws IOException {
+        final Path configPath = this.tempDir.resolve("config.conf");
+        Files.createFile(configPath);
+
+        final ObjectConfigWrapper<ExampleConfig> configWrapper =
+                new ObjectConfigWrapper<>(this.plugin, "config.conf", ExampleConfig.class);
+        configWrapper.load();
+
+        assertNotNull(configWrapper.getConfig());
+        assertEquals("default", configWrapper.getConfig().name);
+
+        final String content = Files.readString(configPath);
+        assertTrue(content.contains("name"));
+        assertTrue(content.contains("default"));
     }
 
     @Test

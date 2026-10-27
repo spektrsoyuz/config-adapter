@@ -52,9 +52,12 @@ public final class ObjectConfigWrapper<T> implements ConfigFile {
 
     // Loads the config file into the node and mapped object
     public void load() {
+        boolean useDefaults = false;
+
         // Check if file is missing at path
         if (Files.notExists(this.path)) {
             this.plugin.getComponentLogger().info("Config file '{}' not found, creating it", this.fileName);
+            useDefaults = true;
 
             try {
                 // Create parent directories if missing
@@ -67,6 +70,12 @@ public final class ObjectConfigWrapper<T> implements ConfigFile {
             } catch (final IOException e) {
                 this.plugin.getComponentLogger().error("Failed to create config file '{}'", this.fileName, e);
                 return;
+            }
+        } else {
+            try {
+                useDefaults = Files.size(this.path) == 0;
+            } catch (final IOException e) {
+                this.plugin.getComponentLogger().error("Failed to inspect config file '{}'", this.fileName, e);
             }
         }
 
@@ -87,6 +96,11 @@ public final class ObjectConfigWrapper<T> implements ConfigFile {
             this.config = this.node.get(this.configClass);
         } catch (final SerializationException e) {
             this.plugin.getComponentLogger().error("Failed to deserialize config file '{}'", this.fileName, e);
+        }
+
+        // Write object defaults when the file was missing or blank
+        if (useDefaults) {
+            this.save();
         }
     }
 
