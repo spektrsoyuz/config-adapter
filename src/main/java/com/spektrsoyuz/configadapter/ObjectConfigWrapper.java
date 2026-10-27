@@ -74,6 +74,10 @@ public final class ObjectConfigWrapper<T> implements ConfigFile {
         } else {
             try {
                 useDefaults = Files.size(this.path) == 0;
+
+                if (useDefaults) {
+                    this.plugin.getComponentLogger().info("Config file '{}' is empty, using defaults", this.fileName);
+                }
             } catch (final IOException e) {
                 this.plugin.getComponentLogger().error("Failed to inspect config file '{}'", this.fileName, e);
             }
@@ -100,6 +104,7 @@ public final class ObjectConfigWrapper<T> implements ConfigFile {
 
         // Write object defaults when the file was missing or blank
         if (useDefaults) {
+            this.plugin.getComponentLogger().info("Saving default values to config file '{}'", this.fileName);
             this.save();
         }
     }
