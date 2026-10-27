@@ -19,6 +19,7 @@ val paperApi = "io.papermc.paper:paper-api:26.2.build.+"
 
 dependencies {
     implementation("org.spongepowered:configurate-hocon:4.3.0-SNAPSHOT")
+    implementation("org.spongepowered:configurate-yaml:4.3.0-SNAPSHOT")
 
     compileOnly(paperApi)
 

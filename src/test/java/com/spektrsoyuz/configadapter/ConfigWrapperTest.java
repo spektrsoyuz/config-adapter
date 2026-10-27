@@ -69,4 +69,24 @@ class ConfigWrapperTest {
         assertTrue(value.contains("value"));
     }
 
+    @Test
+    void testYamlLoadAndSave() throws IOException {
+        final ConfigWrapper configWrapper = new ConfigWrapper(this.plugin, "config.yml", ConfigFormat.YAML);
+        configWrapper.load();
+
+        // Modify the node
+        final var node = configWrapper.getNode();
+        node.node("key").set("value");
+
+        // Save the node
+        configWrapper.save();
+
+        // Read the file
+        final String value = Files.readString(this.tempDir.resolve("config.yml"));
+
+        assertTrue(value.contains("key"));
+        assertTrue(value.contains("value"));
+        assertFalse(value.contains("="));
+    }
+
 }

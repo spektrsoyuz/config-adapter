@@ -21,23 +21,30 @@ public final class ConfigManager {
 
     private final JavaPlugin plugin;
     private final ComponentLogger logger;
+    private final ConfigFormat format;
     private final Map<String, ConfigFile> configs;
 
     // Constructor
     public ConfigManager(final JavaPlugin plugin) {
+        this(plugin, ConfigFormat.HOCON);
+    }
+
+    // Constructor
+    public ConfigManager(final JavaPlugin plugin, final ConfigFormat format) {
         this.plugin = plugin;
         this.logger = plugin.getComponentLogger();
+        this.format = format;
         this.configs = new ConcurrentHashMap<>();
     }
 
     // Adds a resource-backed config to the manager
     public void addConfig(final String fileName) {
-        this.configs.put(fileName, new ConfigWrapper(this.plugin, fileName));
+        this.configs.put(fileName, new ConfigWrapper(this.plugin, fileName, this.format));
     }
 
     // Adds an object-mapped config to the manager
     public <T> void addConfig(final String fileName, final Class<T> configClass) {
-        this.configs.put(fileName, new ObjectConfigWrapper<>(this.plugin, fileName, configClass));
+        this.configs.put(fileName, new ObjectConfigWrapper<>(this.plugin, fileName, configClass, this.format));
     }
 
     // Loads all configs

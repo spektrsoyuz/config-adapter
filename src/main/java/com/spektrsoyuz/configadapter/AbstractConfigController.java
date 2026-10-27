@@ -27,8 +27,17 @@ public abstract class AbstractConfigController {
             final JavaPlugin plugin,
             final String messageConfigKey
     ) {
+        this(plugin, messageConfigKey, ConfigFormat.HOCON);
+    }
+
+    // Constructor
+    public AbstractConfigController(
+            final JavaPlugin plugin,
+            final String messageConfigKey,
+            final ConfigFormat format
+    ) {
         this.plugin = plugin;
-        this.configManager = new ConfigManager(plugin);
+        this.configManager = new ConfigManager(plugin, format);
         this.messageManager = new MessageManager(this.configManager, MiniMessage.miniMessage(), messageConfigKey);
     }
 

@@ -7,7 +7,7 @@ import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.loader.ConfigurationLoader;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,7 +23,7 @@ public final class ConfigWrapper implements ConfigFile {
     private final JavaPlugin plugin;
     private final String fileName;
     private final Path path;
-    private final HoconConfigurationLoader loader;
+    private final ConfigurationLoader<CommentedConfigurationNode> loader;
 
     @Getter
     private CommentedConfigurationNode node;
@@ -31,15 +31,19 @@ public final class ConfigWrapper implements ConfigFile {
     // Constructor
     public ConfigWrapper(final JavaPlugin plugin,
                          final String fileName) {
+        this(plugin, fileName, ConfigFormat.HOCON);
+    }
+
+    // Constructor
+    public ConfigWrapper(final JavaPlugin plugin,
+                         final String fileName,
+                         final ConfigFormat format) {
         this.plugin = plugin;
         this.fileName = fileName;
         this.path = plugin.getDataPath().resolve(fileName);
 
         // Build the config loader
-        this.loader = HoconConfigurationLoader.builder()
-                .path(this.path)
-                .prettyPrinting(true)
-                .build();
+        this.loader = format.createLoader(this.path);
     }
 
     // Loads the config file into the node
