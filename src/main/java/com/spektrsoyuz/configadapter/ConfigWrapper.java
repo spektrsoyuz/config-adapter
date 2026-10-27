@@ -18,7 +18,7 @@ import java.nio.file.Path;
  *
  * @since 1.0.0
  */
-public final class ConfigWrapper {
+public final class ConfigWrapper implements ConfigFile {
 
     private final JavaPlugin plugin;
     private final String fileName;
@@ -29,7 +29,8 @@ public final class ConfigWrapper {
     private CommentedConfigurationNode node;
 
     // Constructor
-    public ConfigWrapper(final JavaPlugin plugin, final String fileName) {
+    public ConfigWrapper(final JavaPlugin plugin,
+                         final String fileName) {
         this.plugin = plugin;
         this.fileName = fileName;
         this.path = plugin.getDataPath().resolve(fileName);

@@ -35,6 +35,7 @@ java {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+    jvmArgs("-Xshare:off")
 
     maxHeapSize = "1G"
 }

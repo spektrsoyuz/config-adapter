@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -163,6 +164,33 @@ class ConfigManagerTest {
         final String messagesValue = this.configManager.get(messagesKey, "key", String.class, null);
         assertEquals("value", configValue);
         assertEquals("value", messagesValue);
+    }
+
+    @Test
+    void testMappedConfigLoadAndSave() throws IOException {
+        // Add config
+        final String configKey = "mapped.conf";
+        this.configManager.addConfig(configKey, ExampleConfig.class);
+        this.configManager.load();
+
+        assertTrue(this.configManager.isLoaded());
+        assertTrue(Files.exists(this.tempDir.resolve(configKey)));
+
+        final ExampleConfig mapped = this.configManager.getMapped(configKey, ExampleConfig.class);
+        assertNotNull(mapped);
+        assertEquals("default", mapped.name);
+
+        // Save the config
+        mapped.name = "updated";
+        this.configManager.save();
+
+        final String content = Files.readString(this.tempDir.resolve(configKey));
+        assertTrue(content.contains("updated"));
+    }
+
+    @ConfigSerializable
+    static class ExampleConfig {
+        String name = "default";
     }
 
 }

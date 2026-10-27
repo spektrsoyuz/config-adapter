@@ -21,7 +21,7 @@ public final class ConfigManager {
 
     private final JavaPlugin plugin;
     private final ComponentLogger logger;
-    private final Map<String, ConfigWrapper> configs;
+    private final Map<String, ConfigFile> configs;
 
     // Constructor
     public ConfigManager(final JavaPlugin plugin) {
@@ -30,28 +30,33 @@ public final class ConfigManager {
         this.configs = new ConcurrentHashMap<>();
     }
 
-    // Adds a config to the manager
+    // Adds a resource-backed config to the manager
     public void addConfig(final String fileName) {
         this.configs.put(fileName, new ConfigWrapper(this.plugin, fileName));
     }
 
+    // Adds an object-mapped config to the manager
+    public <T> void addConfig(final String fileName, final Class<T> configClass) {
+        this.configs.put(fileName, new ObjectConfigWrapper<>(this.plugin, fileName, configClass));
+    }
+
     // Loads all configs
     public void load() {
-        for (final ConfigWrapper config : this.configs.values()) {
+        for (final ConfigFile config : this.configs.values()) {
             config.load();
         }
     }
 
     // Saves all configs
     public void save() {
-        for (final ConfigWrapper config : this.configs.values()) {
+        for (final ConfigFile config : this.configs.values()) {
             config.save();
         }
     }
 
     // Checks if all configs are loaded
     public boolean isLoaded() {
-        for (final ConfigWrapper config : this.configs.values()) {
+        for (final ConfigFile config : this.configs.values()) {
             if (config.getNode() == null) return false;
         }
         return true;
@@ -64,7 +69,7 @@ public final class ConfigManager {
             final Class<T> clazz,
             final T defaultInstance
     ) {
-        final ConfigWrapper wrapper = this.configs.get(configKey);
+        final ConfigFile wrapper = this.configs.get(configKey);
         if (wrapper == null) return defaultInstance;
 
         final Object[] path = nodeName.split("\\.");
@@ -87,7 +92,7 @@ public final class ConfigManager {
             final String nodeName,
             final Class<T> clazz
     ) {
-        final ConfigWrapper wrapper = this.configs.get(configKey);
+        final ConfigFile wrapper = this.configs.get(configKey);
         if (wrapper == null) return Collections.emptyList();
 
         final Object[] path = nodeName.split("\\.");
@@ -111,7 +116,7 @@ public final class ConfigManager {
             final Class<T> clazz,
             final T instance
     ) {
-        final ConfigWrapper wrapper = this.configs.get(configKey);
+        final ConfigFile wrapper = this.configs.get(configKey);
         if (wrapper == null) return;
 
         final Object[] path = nodeName.split("\\.");
@@ -130,7 +135,7 @@ public final class ConfigManager {
             final Class<T> clazz,
             final List<T> instance
     ) {
-        final ConfigWrapper wrapper = this.configs.get(configKey);
+        final ConfigFile wrapper = this.configs.get(configKey);
         if (wrapper == null) return;
 
         final Object[] path = nodeName.split("\\.");
@@ -140,6 +145,23 @@ public final class ConfigManager {
         } catch (final SerializationException e) {
             this.logger.error("Failed to save '{}' to '{}'", path, configKey, e);
         }
+    }
+
+    // Returns the mapped config object, or null if missing or not object-mapped
+    @SuppressWarnings("unchecked")
+    public <T> T getMapped(final String configKey,
+                           final Class<T> configClass) {
+        final ConfigFile wrapper = this.configs.get(configKey);
+        if (!(wrapper instanceof ObjectConfigWrapper<?> objectWrapper)) {
+            return null;
+        }
+
+        final Object mapped = objectWrapper.getConfig();
+        if (!(configClass.isInstance(mapped))) {
+            return null;
+        }
+
+        return (T) mapped;
     }
 
 }
