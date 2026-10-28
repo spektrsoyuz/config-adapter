@@ -31,7 +31,7 @@ public final class MessageSerializer implements TypeSerializer<Message> {
             return null;
         }
 
-        return new Message(node.getString(), findPrefix(node));
+        return new Message(node.getString(), this.findPrefix(node));
     }
 
     // Serializes a Message to the given configuration node
@@ -49,10 +49,12 @@ public final class MessageSerializer implements TypeSerializer<Message> {
     }
 
     // Walks ancestors for a sibling scalar named "prefix"
-    private static @Nullable String findPrefix(final ConfigurationNode node) {
+    private @Nullable String findPrefix(final ConfigurationNode node) {
         ConfigurationNode current = node.parent();
+
         while (current != null) {
             final ConfigurationNode prefixNode = current.node("prefix");
+
             if (!prefixNode.virtual() && !prefixNode.isNull() && !prefixNode.isMap() && !prefixNode.isList()) {
                 return prefixNode.getString();
             }

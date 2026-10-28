@@ -53,7 +53,7 @@ class ObjectConfigWrapperTest {
         assertTrue(Files.exists(this.tempDir.resolve("config.conf")));
         assertNotNull(configWrapper.getNode());
         assertNotNull(configWrapper.getConfig());
-        assertEquals("default", configWrapper.getConfig().name);
+        assertEquals("default", configWrapper.getConfig().name());
 
         final String content = Files.readString(this.tempDir.resolve("config.conf"));
         assertTrue(content.contains("name"));
@@ -70,7 +70,7 @@ class ObjectConfigWrapperTest {
         configWrapper.load();
 
         assertNotNull(configWrapper.getConfig());
-        assertEquals("default", configWrapper.getConfig().name);
+        assertEquals("default", configWrapper.getConfig().name());
 
         final String content = Files.readString(configPath);
         assertTrue(content.contains("name"));
@@ -84,7 +84,7 @@ class ObjectConfigWrapperTest {
         configWrapper.load();
 
         // Modify the mapped config
-        configWrapper.getConfig().name = "updated";
+        configWrapper.getConfig().name("updated");
 
         // Save the mapped config
         configWrapper.save();

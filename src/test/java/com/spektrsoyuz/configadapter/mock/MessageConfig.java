@@ -5,6 +5,8 @@ package com.spektrsoyuz.configadapter.mock;
 
 import com.spektrsoyuz.configadapter.type.Message;
 import com.spektrsoyuz.configadapter.type.MessageList;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
@@ -13,14 +15,16 @@ import org.spongepowered.configurate.objectmapping.meta.Setting;
  *
  * @since 1.0.5
  */
+@Getter
+@Accessors(fluent = true)
 @ConfigSerializable
-public final class MessagesConfig {
+public final class MessageConfig {
 
-    public Message prefix = new Message("prefix");
+    private final Message prefix = new Message("prefix");
 
-    public Message welcome = new Message("<prefix> <gray>Welcome</gray>");
+    private final Message welcome = new Message("<prefix> <gray>Welcome</gray>");
 
     @Setting("welcomeList")
-    public MessageList welcomeList = new MessageList();
+    private final MessageList welcomeList = new MessageList();
 
 }

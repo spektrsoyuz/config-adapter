@@ -3,6 +3,9 @@
  */
 package com.spektrsoyuz.configadapter.mock;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 /**
@@ -10,9 +13,12 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
  *
  * @since 1.0.5
  */
+@Getter
+@Setter
+@Accessors(fluent = true)
 @ConfigSerializable
 public final class PrimaryConfig {
 
-    public String name = "default";
+    private String name = "default";
 
 }

@@ -3,7 +3,7 @@
  */
 package com.spektrsoyuz.configadapter;
 
-import com.spektrsoyuz.configadapter.mock.MessagesConfig;
+import com.spektrsoyuz.configadapter.mock.MessageConfig;
 import com.spektrsoyuz.configadapter.type.Message;
 import com.spektrsoyuz.configadapter.type.MessageList;
 import com.spektrsoyuz.configadapter.wrapper.ObjectConfigWrapper;
@@ -114,16 +114,16 @@ class MessageTest {
                 ]
                 """);
 
-        final ObjectConfigWrapper<MessagesConfig> wrapper =
-                new ObjectConfigWrapper<>(this.plugin, "messages.conf", MessagesConfig.class);
+        final ObjectConfigWrapper<MessageConfig> wrapper =
+                new ObjectConfigWrapper<>(this.plugin, "messages.conf", MessageConfig.class);
         wrapper.load();
 
         assertNotNull(wrapper.getConfig());
-        assertEquals("prefix", wrapper.getConfig().prefix.raw());
-        assertEquals("<prefix> <gray>Welcome to the server, <player>!</gray>", wrapper.getConfig().welcome.raw());
+        assertEquals("prefix", wrapper.getConfig().prefix().raw());
+        assertEquals("<prefix> <gray>Welcome to the server, <player>!</gray>", wrapper.getConfig().welcome().raw());
 
         // Deserialize mapped Message fields
-        final Component welcome = wrapper.getConfig().welcome.asComponent(
+        final Component welcome = wrapper.getConfig().welcome().asComponent(
                 true,
                 Placeholder.parsed("player", "xBumbleBee")
         );
@@ -131,8 +131,23 @@ class MessageTest {
         assertTrue(serialized.contains("prefix"));
         assertTrue(serialized.contains("xBumbleBee"));
 
-        final List<Component> list = wrapper.getConfig().welcomeList.asComponents(true);
+        final List<Component> list = wrapper.getConfig().welcomeList().asComponents(true);
         assertEquals(2, list.size());
+    }
+
+    @Test
+    void testDefaultMappedPrefixResolved() {
+        final ObjectConfigWrapper<MessageConfig> wrapper =
+                new ObjectConfigWrapper<>(this.plugin, "messages.conf", MessageConfig.class);
+        wrapper.load();
+
+        assertNotNull(wrapper.getConfig());
+
+        final Component welcome = wrapper.getConfig().welcome().asComponent(true);
+        final String serialized = MiniMessage.miniMessage().serialize(welcome);
+
+        assertTrue(serialized.contains("prefix"));
+        assertTrue(serialized.contains("Welcome"));
     }
 
 }

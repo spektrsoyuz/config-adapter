@@ -112,6 +112,13 @@ public final class ObjectConfigWrapper<T> implements ConfigFile {
         if (useDefaults) {
             this.plugin.getComponentLogger().info("Saving default values to config file '{}'", this.fileName);
             this.save();
+
+            // Re-deserialize so Message fields pick up a sibling prefix from the node
+            try {
+                this.config = this.node.get(this.configClass);
+            } catch (final SerializationException e) {
+                this.plugin.getComponentLogger().error("Failed to deserialize config file '{}'", this.fileName, e);
+            }
         }
     }
 
