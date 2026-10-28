@@ -48,11 +48,14 @@ class MessageTest {
 
     @Test
     void testAsComponent() {
-        final Message message = new Message("<prefix> <gray>Welcome to the server, <player>!</gray>");
+        final Message message = new Message(
+                "<prefix> <gray>Welcome to the server, <player>!</gray>",
+                "prefix"
+        );
 
         // Deserialize with prefix and extra placeholders
         final Component result = message.asComponent(
-                "prefix",
+                true,
                 Placeholder.parsed("player", "xBumbleBee")
         );
 
@@ -67,15 +70,14 @@ class MessageTest {
 
     @Test
     void testAsComponents() {
-        final List<Message> messages = List.of(
-                new Message("<prefix> <gray>Welcome to the server, <player>!</gray>"),
-                new Message("<prefix> <gray>Have a nice day!</gray>")
-        );
+        final MessageList messages = new MessageList(List.of(
+                new Message("<prefix> <gray>Welcome to the server, <player>!</gray>", "prefix"),
+                new Message("<prefix> <gray>Have a nice day!</gray>", "prefix")
+        ));
 
         // Deserialize a list of templates
-        final List<Component> results = Message.asComponents(
-                messages,
-                "prefix",
+        final List<Component> results = messages.asComponents(
+                true,
                 Placeholder.parsed("player", "xBumbleBee")
         );
 
@@ -93,8 +95,8 @@ class MessageTest {
 
     @Test
     void testAsComponentsEmpty() {
-        assertTrue(Message.asComponents(List.of()).isEmpty());
-        assertTrue(Message.asComponents(null).isEmpty());
+        assertTrue(new MessageList().asComponents(false).isEmpty());
+        assertTrue(new MessageList(null).asComponents(false).isEmpty());
     }
 
     @Test
@@ -114,21 +116,19 @@ class MessageTest {
         wrapper.load();
 
         assertNotNull(wrapper.getConfig());
-        assertEquals("prefix", wrapper.getConfig().prefix);
+        assertEquals("prefix", wrapper.getConfig().prefix.raw());
         assertEquals("<prefix> <gray>Welcome to the server, <player>!</gray>", wrapper.getConfig().welcome.raw());
 
         // Deserialize mapped Message fields
         final Component welcome = wrapper.getConfig().welcome.asComponent(
-                wrapper.getConfig().prefix,
+                true,
                 Placeholder.parsed("player", "xBumbleBee")
         );
         final String serialized = MiniMessage.miniMessage().serialize(welcome);
+        assertTrue(serialized.contains("prefix"));
         assertTrue(serialized.contains("xBumbleBee"));
 
-        final List<Component> list = Message.asComponents(
-                wrapper.getConfig().welcomeList,
-                wrapper.getConfig().prefix
-        );
+        final List<Component> list = wrapper.getConfig().welcomeList.asComponents(true);
         assertEquals(2, list.size());
     }
 

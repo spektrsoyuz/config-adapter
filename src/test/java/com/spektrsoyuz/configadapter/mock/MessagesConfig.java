@@ -4,10 +4,9 @@
 package com.spektrsoyuz.configadapter.mock;
 
 import com.spektrsoyuz.configadapter.Message;
+import com.spektrsoyuz.configadapter.MessageList;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
-
-import java.util.ArrayList;
 
 /**
  * Mock mapped 'messages' config for testing.
@@ -17,11 +16,11 @@ import java.util.ArrayList;
 @ConfigSerializable
 public final class MessagesConfig {
 
-    public String prefix = "prefix";
+    public Message prefix = new Message("prefix");
 
     public Message welcome = new Message("<prefix> <gray>Welcome</gray>");
 
     @Setting("welcomeList")
-    public ArrayList<Message> welcomeList = new ArrayList<>();
+    public MessageList welcomeList = new MessageList();
 
 }

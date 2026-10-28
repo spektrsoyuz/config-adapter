@@ -47,8 +47,9 @@ public enum ConfigFormat {
 
     // Registers the Message scalar serializer
     private static UnaryOperator<ConfigurationOptions> messageOptions() {
-        return options -> options.serializers(builder ->
-                builder.register(Message.class, MessageSerializer.INSTANCE));
+        return options -> options.serializers(builder -> builder
+                .register(Message.class, MessageSerializer.INSTANCE)
+                .register(MessageList.class, MessageListSerializer.INSTANCE));
     }
 
 }
