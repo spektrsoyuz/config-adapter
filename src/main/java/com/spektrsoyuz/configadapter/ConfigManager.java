@@ -33,7 +33,8 @@ public final class ConfigManager {
     }
 
     // Constructor
-    public ConfigManager(final JavaPlugin plugin, final ConfigFormat format) {
+    public ConfigManager(final JavaPlugin plugin,
+                         final ConfigFormat format) {
         this.plugin = plugin;
         this.logger = plugin.getComponentLogger();
         this.format = format;
@@ -73,12 +74,10 @@ public final class ConfigManager {
     }
 
     // Returns a value from a config
-    public <T> T get(
-            final String configKey,
-            final String nodeName,
-            final Class<T> clazz,
-            final T defaultInstance
-    ) {
+    public <T> T get(final String configKey,
+                     final String nodeName,
+                     final Class<T> clazz,
+                     final T defaultInstance) {
         final ConfigFile wrapper = this.configs.get(configKey);
         if (wrapper == null) return defaultInstance;
 
@@ -97,11 +96,9 @@ public final class ConfigManager {
     }
 
     // Returns a list of values from a config
-    public <T> List<T> getList(
-            final String configKey,
-            final String nodeName,
-            final Class<T> clazz
-    ) {
+    public <T> List<T> getList(final String configKey,
+                               final String nodeName,
+                               final Class<T> clazz) {
         final ConfigFile wrapper = this.configs.get(configKey);
         if (wrapper == null) return Collections.emptyList();
 
@@ -120,12 +117,10 @@ public final class ConfigManager {
     }
 
     // Sets a value in a config
-    public <T> void set(
-            final String configKey,
-            final String nodeName,
-            final Class<T> clazz,
-            final T instance
-    ) {
+    public <T> void set(final String configKey,
+                        final String nodeName,
+                        final Class<T> clazz,
+                        final T instance) {
         final ConfigFile wrapper = this.configs.get(configKey);
         if (wrapper == null) return;
 
@@ -139,12 +134,10 @@ public final class ConfigManager {
     }
 
     // Sets a list of values in a config
-    public <T> void setList(
-            final String configKey,
-            final String nodeName,
-            final Class<T> clazz,
-            final List<T> instance
-    ) {
+    public <T> void setList(final String configKey,
+                            final String nodeName,
+                            final Class<T> clazz,
+                            final List<T> instance) {
         final ConfigFile wrapper = this.configs.get(configKey);
         if (wrapper == null) return;
 
@@ -162,6 +155,7 @@ public final class ConfigManager {
     public <T> T getMapped(final String configKey,
                            final Class<T> configClass) {
         final ConfigFile wrapper = this.configs.get(configKey);
+
         if (!(wrapper instanceof ObjectConfigWrapper<?> objectWrapper)) {
             return null;
         }

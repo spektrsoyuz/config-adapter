@@ -14,9 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class ConfigController extends AbstractConfigController {
 
     // Constructor
-    public ConfigController(
-            final JavaPlugin plugin
-    ) {
+    public ConfigController(final JavaPlugin plugin) {
         super(plugin);
     }
 
