@@ -3,13 +3,7 @@
  */
 package com.spektrsoyuz.configadapter;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * Abstract class for a configuration controller.
@@ -20,48 +14,19 @@ public abstract class AbstractConfigController {
 
     protected final JavaPlugin plugin;
     protected final ConfigManager configManager;
-    protected final MessageManager messageManager;
 
     // Constructor
-    public AbstractConfigController(
-            final JavaPlugin plugin,
-            final String messageConfigKey
-    ) {
-        this(plugin, messageConfigKey, ConfigFormat.HOCON);
+    public AbstractConfigController(final JavaPlugin plugin) {
+        this(plugin, ConfigFormat.HOCON);
     }
 
     // Constructor
     public AbstractConfigController(
             final JavaPlugin plugin,
-            final String messageConfigKey,
             final ConfigFormat format
     ) {
         this.plugin = plugin;
         this.configManager = new ConfigManager(plugin, format);
-        this.messageManager = new MessageManager(this.configManager, MiniMessage.miniMessage(), messageConfigKey);
-    }
-
-    // Returns a component from the message config
-    public @NotNull Component getMessage(
-            final String key,
-            final TagResolver... resolvers
-    ) {
-        return this.messageManager.getMessage(key, resolvers);
-    }
-
-    // Returns a list of components from the message config
-    public @NotNull List<Component> getMessageList(
-            final String key,
-            final TagResolver... resolvers
-    ) {
-        return this.messageManager.getMessageList(key, resolvers);
-    }
-
-    // Returns a string from the message config
-    public @NotNull String getString(
-            final String key
-    ) {
-        return this.messageManager.getString(key);
     }
 
     // Initializes the controller

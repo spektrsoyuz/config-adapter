@@ -3,12 +3,12 @@
  */
 package com.spektrsoyuz.configadapter;
 
+import com.spektrsoyuz.configadapter.mock.PrimaryConfig;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -43,8 +43,8 @@ class ObjectConfigWrapperTest {
 
     @Test
     void testLoad() throws IOException {
-        final ObjectConfigWrapper<ExampleConfig> configWrapper =
-                new ObjectConfigWrapper<>(this.plugin, "config.conf", ExampleConfig.class);
+        final ObjectConfigWrapper<PrimaryConfig> configWrapper =
+                new ObjectConfigWrapper<>(this.plugin, "config.conf", PrimaryConfig.class);
 
         // Load the mapped config
         configWrapper.load();
@@ -64,8 +64,8 @@ class ObjectConfigWrapperTest {
         final Path configPath = this.tempDir.resolve("config.conf");
         Files.createFile(configPath);
 
-        final ObjectConfigWrapper<ExampleConfig> configWrapper =
-                new ObjectConfigWrapper<>(this.plugin, "config.conf", ExampleConfig.class);
+        final ObjectConfigWrapper<PrimaryConfig> configWrapper =
+                new ObjectConfigWrapper<>(this.plugin, "config.conf", PrimaryConfig.class);
         configWrapper.load();
 
         assertNotNull(configWrapper.getConfig());
@@ -78,8 +78,8 @@ class ObjectConfigWrapperTest {
 
     @Test
     void testSave() throws IOException {
-        final ObjectConfigWrapper<ExampleConfig> configWrapper =
-                new ObjectConfigWrapper<>(this.plugin, "config.conf", ExampleConfig.class);
+        final ObjectConfigWrapper<PrimaryConfig> configWrapper =
+                new ObjectConfigWrapper<>(this.plugin, "config.conf", PrimaryConfig.class);
         configWrapper.load();
 
         // Modify the mapped config
@@ -93,11 +93,6 @@ class ObjectConfigWrapperTest {
 
         assertTrue(value.contains("name"));
         assertTrue(value.contains("updated"));
-    }
-
-    @ConfigSerializable
-    static class ExampleConfig {
-        String name = "default";
     }
 
 }

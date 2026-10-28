@@ -17,7 +17,7 @@ public final class ConfigController extends AbstractConfigController {
     public ConfigController(
             final JavaPlugin plugin
     ) {
-        super(plugin, "messages.conf");
+        super(plugin);
     }
 
     @Override
