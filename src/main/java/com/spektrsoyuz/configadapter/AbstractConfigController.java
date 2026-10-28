@@ -21,10 +21,8 @@ public abstract class AbstractConfigController {
     }
 
     // Constructor
-    public AbstractConfigController(
-            final JavaPlugin plugin,
-            final ConfigFormat format
-    ) {
+    public AbstractConfigController(final JavaPlugin plugin,
+                                    final ConfigFormat format) {
         this.plugin = plugin;
         this.configManager = new ConfigManager(plugin, format);
     }

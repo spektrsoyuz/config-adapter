@@ -31,8 +31,12 @@ public final class Message {
     // Constructor with a prefix captured from the owning config
     public Message(final @Nullable String template,
                    final @Nullable String prefix) {
-        this.template = template != null ? template : "";
-        this.prefix = prefix != null ? prefix : "";
+        this.template = template != null
+                ? template
+                : "";
+        this.prefix = prefix != null
+                ? prefix
+                : "";
     }
 
     // Returns the raw MiniMessage template
