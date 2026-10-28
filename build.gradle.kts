@@ -15,7 +15,7 @@ repositories {
     }
 }
 
-val paperApi = "io.papermc.paper:paper-api:26.2.build.+"
+val paperApi = "io.papermc.paper:paper-api:26.3.build.+"
 
 dependencies {
     implementation("org.spongepowered:configurate-hocon:4.3.0-SNAPSHOT")
