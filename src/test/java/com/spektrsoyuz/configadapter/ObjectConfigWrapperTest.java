@@ -4,6 +4,7 @@
 package com.spektrsoyuz.configadapter;
 
 import com.spektrsoyuz.configadapter.mock.PrimaryConfig;
+import com.spektrsoyuz.configadapter.wrapper.ObjectConfigWrapper;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.jupiter.api.BeforeEach;

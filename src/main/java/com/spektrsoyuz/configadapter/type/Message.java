@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2026 SpektrSoyuz. All rights reserved.
  */
-package com.spektrsoyuz.configadapter;
+package com.spektrsoyuz.configadapter.type;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;

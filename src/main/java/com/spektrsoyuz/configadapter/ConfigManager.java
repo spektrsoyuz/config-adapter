@@ -3,6 +3,9 @@
  */
 package com.spektrsoyuz.configadapter;
 
+import com.spektrsoyuz.configadapter.wrapper.ConfigFile;
+import com.spektrsoyuz.configadapter.wrapper.ConfigWrapper;
+import com.spektrsoyuz.configadapter.wrapper.ObjectConfigWrapper;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.spongepowered.configurate.serialize.SerializationException;

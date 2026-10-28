@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2026 SpektrSoyuz. All rights reserved.
  */
-package com.spektrsoyuz.configadapter;
+package com.spektrsoyuz.configadapter.wrapper;
 
 import org.spongepowered.configurate.CommentedConfigurationNode;
 

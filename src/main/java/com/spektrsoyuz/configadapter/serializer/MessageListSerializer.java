@@ -1,8 +1,10 @@
 /**
  * Copyright (c) 2026 SpektrSoyuz. All rights reserved.
  */
-package com.spektrsoyuz.configadapter;
+package com.spektrsoyuz.configadapter.serializer;
 
+import com.spektrsoyuz.configadapter.type.Message;
+import com.spektrsoyuz.configadapter.type.MessageList;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;

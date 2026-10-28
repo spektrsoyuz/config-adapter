@@ -3,6 +3,10 @@
  */
 package com.spektrsoyuz.configadapter;
 
+import com.spektrsoyuz.configadapter.serializer.MessageListSerializer;
+import com.spektrsoyuz.configadapter.serializer.MessageSerializer;
+import com.spektrsoyuz.configadapter.type.Message;
+import com.spektrsoyuz.configadapter.type.MessageList;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurationOptions;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
@@ -22,7 +26,7 @@ public enum ConfigFormat {
 
     HOCON {
         @Override
-        ConfigurationLoader<CommentedConfigurationNode> createLoader(final Path path) {
+        public ConfigurationLoader<CommentedConfigurationNode> createLoader(final Path path) {
             return HoconConfigurationLoader.builder()
                     .path(path)
                     .prettyPrinting(true)
@@ -32,7 +36,7 @@ public enum ConfigFormat {
     },
     YAML {
         @Override
-        ConfigurationLoader<CommentedConfigurationNode> createLoader(final Path path) {
+        public ConfigurationLoader<CommentedConfigurationNode> createLoader(final Path path) {
             return YamlConfigurationLoader.builder()
                     .path(path)
                     .nodeStyle(NodeStyle.BLOCK)
@@ -43,7 +47,7 @@ public enum ConfigFormat {
     };
 
     // Returns a ConfigurationLoader for the given path
-    abstract ConfigurationLoader<CommentedConfigurationNode> createLoader(final Path path);
+    public abstract ConfigurationLoader<CommentedConfigurationNode> createLoader(final Path path);
 
     // Registers the Message scalar serializer
     private static UnaryOperator<ConfigurationOptions> messageOptions() {

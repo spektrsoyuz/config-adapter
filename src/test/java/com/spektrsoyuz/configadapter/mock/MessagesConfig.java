@@ -3,8 +3,8 @@
  */
 package com.spektrsoyuz.configadapter.mock;
 
-import com.spektrsoyuz.configadapter.Message;
-import com.spektrsoyuz.configadapter.MessageList;
+import com.spektrsoyuz.configadapter.type.Message;
+import com.spektrsoyuz.configadapter.type.MessageList;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 

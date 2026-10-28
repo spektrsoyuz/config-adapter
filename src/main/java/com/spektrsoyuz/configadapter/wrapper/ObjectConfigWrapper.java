@@ -1,8 +1,9 @@
 /**
  * Copyright (c) 2026 SpektrSoyuz. All rights reserved.
  */
-package com.spektrsoyuz.configadapter;
+package com.spektrsoyuz.configadapter.wrapper;
 
+import com.spektrsoyuz.configadapter.ConfigFormat;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.spongepowered.configurate.CommentedConfigurationNode;

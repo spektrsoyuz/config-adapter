@@ -4,6 +4,9 @@
 package com.spektrsoyuz.configadapter;
 
 import com.spektrsoyuz.configadapter.mock.MessagesConfig;
+import com.spektrsoyuz.configadapter.type.Message;
+import com.spektrsoyuz.configadapter.type.MessageList;
+import com.spektrsoyuz.configadapter.wrapper.ObjectConfigWrapper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
