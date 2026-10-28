@@ -44,6 +44,7 @@ class ConfigWrapperTest {
 
     @Test
     void testLoad() throws IOException {
+        // Create mapped config wrapper
         final ConfigWrapperImpl<PrimaryConfig> configWrapper =
                 new ConfigWrapperImpl<>(this.plugin, "config.conf", PrimaryConfig.class);
 
@@ -64,11 +65,15 @@ class ConfigWrapperTest {
 
     @Test
     void testLoadPopulatesBlankFile() throws IOException {
+        // Create a blank config file
         final Path configPath = this.tempDir.resolve("config.conf");
         Files.createFile(configPath);
 
+        // Create mapped config wrapper
         final ConfigWrapperImpl<PrimaryConfig> configWrapper =
                 new ConfigWrapperImpl<>(this.plugin, "config.conf", PrimaryConfig.class);
+
+        // Load the mapped config
         configWrapper.load();
 
         assertNotNull(configWrapper.getConfig());
@@ -83,11 +88,15 @@ class ConfigWrapperTest {
 
     @Test
     void testLoadAddsMissingEntries() throws IOException {
+        // Write a partial config file
         final Path configPath = this.tempDir.resolve("config.conf");
         Files.writeString(configPath, "name=custom\n");
 
+        // Create mapped config wrapper
         final ConfigWrapperImpl<PrimaryConfig> configWrapper =
                 new ConfigWrapperImpl<>(this.plugin, "config.conf", PrimaryConfig.class);
+
+        // Load the mapped config
         configWrapper.load();
 
         assertEquals("custom", configWrapper.getConfig().name());
@@ -102,8 +111,11 @@ class ConfigWrapperTest {
 
     @Test
     void testSave() throws IOException {
+        // Create mapped config wrapper
         final ConfigWrapperImpl<PrimaryConfig> configWrapper =
                 new ConfigWrapperImpl<>(this.plugin, "config.conf", PrimaryConfig.class);
+
+        // Load the mapped config
         configWrapper.load();
 
         // Modify the mapped config

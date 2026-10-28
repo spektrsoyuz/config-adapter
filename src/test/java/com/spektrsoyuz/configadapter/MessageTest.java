@@ -51,6 +51,7 @@ class MessageTest {
 
     @Test
     void testAsComponent() {
+        // Create a message template
         final Message message = new Message(
                 "<prefix> <gray>Welcome to the server, <player>!</gray>",
                 "prefix"
@@ -73,6 +74,7 @@ class MessageTest {
 
     @Test
     void testAsComponents() {
+        // Create a list of message templates
         final MessageList messages = new MessageList(List.of(
                 new Message("<prefix> <gray>Welcome to the server, <player>!</gray>", "prefix"),
                 new Message("<prefix> <gray>Have a nice day!</gray>", "prefix")
@@ -98,6 +100,7 @@ class MessageTest {
 
     @Test
     void testAsComponentsEmpty() {
+        // Deserialize empty and null lists
         assertTrue(new MessageList().asComponents(false).isEmpty());
         assertTrue(new MessageList(null).asComponents(false).isEmpty());
     }
@@ -114,6 +117,7 @@ class MessageTest {
                 ]
                 """);
 
+        // Load the mapped config
         final ConfigWrapperImpl<MessageConfig> wrapper =
                 new ConfigWrapperImpl<>(this.plugin, "messages.conf", MessageConfig.class);
         wrapper.load();
@@ -137,12 +141,14 @@ class MessageTest {
 
     @Test
     void testDefaultMappedPrefixResolved() {
+        // Load the mapped config
         final ConfigWrapperImpl<MessageConfig> wrapper =
                 new ConfigWrapperImpl<>(this.plugin, "messages.conf", MessageConfig.class);
         wrapper.load();
 
         assertNotNull(wrapper.getConfig());
 
+        // Deserialize with the default prefix
         final Component welcome = wrapper.getConfig().welcome().asComponent(true);
         final String serialized = MiniMessage.miniMessage().serialize(welcome);
 

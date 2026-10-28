@@ -57,6 +57,7 @@ class ConfigControllerTest {
 
     @Test
     void testInitLoadsConfigs() {
+        // Verify configs are loaded
         assertTrue(this.controller.configManager.isLoaded());
     }
 

@@ -3,12 +3,12 @@
  */
 package com.spektrsoyuz.configadapter;
 
+import com.spektrsoyuz.configadapter.mock.PrimaryConfig;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,7 +46,7 @@ class ConfigManagerTest {
     @Test
     void testAddConfig() {
         // Add config
-        this.configManager.addConfig("config.conf", ExampleConfig.class);
+        this.configManager.addConfig("config.conf", PrimaryConfig.class);
 
         assertFalse(this.configManager.isLoaded());
 
@@ -59,33 +59,38 @@ class ConfigManagerTest {
 
     @Test
     void testGetMissing() {
-        assertNull(this.configManager.get("config.conf", ExampleConfig.class));
+        // Get a missing config
+        assertNull(this.configManager.get("config.conf", PrimaryConfig.class));
     }
 
     @Test
     void testLoadAndSave() throws IOException {
         // Add configs
-        final String configKey = "config.conf";
-        final String messagesKey = "messages.conf";
+        final String configKey1 = "config.conf";
+        final String configKey2 = "messages.conf";
 
-        this.configManager.addConfig(configKey, ExampleConfig.class);
-        this.configManager.addConfig(messagesKey, ExampleConfig.class);
+        this.configManager.addConfig(configKey1, PrimaryConfig.class);
+        this.configManager.addConfig(configKey2, PrimaryConfig.class);
+
+        // Load config manager
         this.configManager.load();
 
-        final ExampleConfig config = this.configManager.get(configKey, ExampleConfig.class);
-        final ExampleConfig messages = this.configManager.get(messagesKey, ExampleConfig.class);
-        assertNotNull(config);
-        assertNotNull(messages);
+        // Get the mapped configs
+        final PrimaryConfig config1 = this.configManager.get(configKey1, PrimaryConfig.class);
+        final PrimaryConfig config2 = this.configManager.get(configKey2, PrimaryConfig.class);
+        assertNotNull(config1);
+        assertNotNull(config2);
 
-        config.name = "value";
-        messages.name = "value";
+        // Modify the mapped configs
+        config1.name("value");
+        config2.name("value");
 
         // Save the configs
         this.configManager.save();
 
         // Verify the files were modified
-        final String configContent = Files.readString(this.tempDir.resolve(configKey));
-        final String messagesContent = Files.readString(this.tempDir.resolve(messagesKey));
+        final String configContent = Files.readString(this.tempDir.resolve(configKey1));
+        final String messagesContent = Files.readString(this.tempDir.resolve(configKey2));
 
         assertTrue(configContent.contains("value"));
         assertTrue(messagesContent.contains("value"));
@@ -94,28 +99,28 @@ class ConfigManagerTest {
     @Test
     void testMappedConfigLoadAndSave() throws IOException {
         // Add config
-        final String configKey = "mapped.conf";
-        this.configManager.addConfig(configKey, ExampleConfig.class);
+        final String configKey = "config.conf";
+        this.configManager.addConfig(configKey, PrimaryConfig.class);
+
+        // Load config manager
         this.configManager.load();
 
         assertTrue(this.configManager.isLoaded());
         assertTrue(Files.exists(this.tempDir.resolve(configKey)));
 
-        final ExampleConfig mapped = this.configManager.get(configKey, ExampleConfig.class);
-        assertNotNull(mapped);
-        assertEquals("default", mapped.name);
+        // Get the mapped config
+        final PrimaryConfig config = this.configManager.get(configKey, PrimaryConfig.class);
+        assertNotNull(config);
+        assertEquals("default", config.name());
+
+        // Modify the mapped config
+        config.name("updated");
 
         // Save the config
-        mapped.name = "updated";
         this.configManager.save();
 
         final String content = Files.readString(this.tempDir.resolve(configKey));
         assertTrue(content.contains("updated"));
-    }
-
-    @ConfigSerializable
-    static class ExampleConfig {
-        String name = "default";
     }
 
 }
