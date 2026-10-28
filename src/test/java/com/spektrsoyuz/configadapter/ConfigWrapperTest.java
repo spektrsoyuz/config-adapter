@@ -3,7 +3,8 @@
  */
 package com.spektrsoyuz.configadapter;
 
-import com.spektrsoyuz.configadapter.wrapper.ConfigWrapper;
+import com.spektrsoyuz.configadapter.mock.PrimaryConfig;
+import com.spektrsoyuz.configadapter.wrapper.ConfigWrapperImpl;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,10 +16,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link ConfigWrapper}.
+ * Unit tests for {@link ConfigWrapperImpl}.
  *
  * @since 1.0.1
  */
@@ -41,53 +43,80 @@ class ConfigWrapperTest {
     }
 
     @Test
-    void testLoad() {
-        final ConfigWrapper configWrapper = new ConfigWrapper(this.plugin, "config.conf");
+    void testLoad() throws IOException {
+        final ConfigWrapperImpl<PrimaryConfig> configWrapper =
+                new ConfigWrapperImpl<>(this.plugin, "config.conf", PrimaryConfig.class);
 
-        // Load the node
+        // Load the mapped config
         configWrapper.load();
 
         assertTrue(Files.exists(this.tempDir.resolve("config.conf")));
         assertNotNull(configWrapper.getNode());
+        assertNotNull(configWrapper.getConfig());
+        assertEquals("default", configWrapper.getConfig().name());
+        assertTrue(configWrapper.getConfig().enabled());
+
+        final String content = Files.readString(this.tempDir.resolve("config.conf"));
+        assertTrue(content.contains("name"));
+        assertTrue(content.contains("default"));
+        assertTrue(content.contains("enabled"));
+    }
+
+    @Test
+    void testLoadPopulatesBlankFile() throws IOException {
+        final Path configPath = this.tempDir.resolve("config.conf");
+        Files.createFile(configPath);
+
+        final ConfigWrapperImpl<PrimaryConfig> configWrapper =
+                new ConfigWrapperImpl<>(this.plugin, "config.conf", PrimaryConfig.class);
+        configWrapper.load();
+
+        assertNotNull(configWrapper.getConfig());
+        assertEquals("default", configWrapper.getConfig().name());
+        assertTrue(configWrapper.getConfig().enabled());
+
+        final String content = Files.readString(configPath);
+        assertTrue(content.contains("name"));
+        assertTrue(content.contains("default"));
+        assertTrue(content.contains("enabled"));
+    }
+
+    @Test
+    void testLoadAddsMissingEntries() throws IOException {
+        final Path configPath = this.tempDir.resolve("config.conf");
+        Files.writeString(configPath, "name=custom\n");
+
+        final ConfigWrapperImpl<PrimaryConfig> configWrapper =
+                new ConfigWrapperImpl<>(this.plugin, "config.conf", PrimaryConfig.class);
+        configWrapper.load();
+
+        assertEquals("custom", configWrapper.getConfig().name());
+        assertTrue(configWrapper.getConfig().enabled());
+
+        final String content = Files.readString(configPath);
+        assertTrue(content.contains("name"));
+        assertTrue(content.contains("custom"));
+        assertTrue(content.contains("enabled"));
+        assertFalse(content.contains("default"));
     }
 
     @Test
     void testSave() throws IOException {
-        final ConfigWrapper configWrapper = new ConfigWrapper(this.plugin, "config.conf");
+        final ConfigWrapperImpl<PrimaryConfig> configWrapper =
+                new ConfigWrapperImpl<>(this.plugin, "config.conf", PrimaryConfig.class);
         configWrapper.load();
 
-        // Modify the node
-        final var node = configWrapper.getNode();
-        node.node("key").set("value");
+        // Modify the mapped config
+        configWrapper.getConfig().name("updated");
 
-        // Save the node
+        // Save the mapped config
         configWrapper.save();
 
         // Read the file
         final String value = Files.readString(this.tempDir.resolve("config.conf"));
 
-        assertTrue(value.contains("key"));
-        assertTrue(value.contains("value"));
-    }
-
-    @Test
-    void testYamlLoadAndSave() throws IOException {
-        final ConfigWrapper configWrapper = new ConfigWrapper(this.plugin, "config.yml", ConfigFormat.YAML);
-        configWrapper.load();
-
-        // Modify the node
-        final var node = configWrapper.getNode();
-        node.node("key").set("value");
-
-        // Save the node
-        configWrapper.save();
-
-        // Read the file
-        final String value = Files.readString(this.tempDir.resolve("config.yml"));
-
-        assertTrue(value.contains("key"));
-        assertTrue(value.contains("value"));
-        assertFalse(value.contains("="));
+        assertTrue(value.contains("name"));
+        assertTrue(value.contains("updated"));
     }
 
 }

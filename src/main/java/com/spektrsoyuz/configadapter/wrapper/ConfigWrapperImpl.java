@@ -21,7 +21,7 @@ import java.nio.file.Path;
  * @param <T> the mapped configuration type
  * @since 1.0.1
  */
-public final class ObjectConfigWrapper<T> implements ConfigFile {
+public final class ConfigWrapperImpl<T> implements ConfigWrapper {
 
     private final JavaPlugin plugin;
     private final String fileName;
@@ -36,17 +36,17 @@ public final class ObjectConfigWrapper<T> implements ConfigFile {
     private T config;
 
     // Constructor
-    public ObjectConfigWrapper(final JavaPlugin plugin,
-                               final String fileName,
-                               final Class<T> configClass) {
+    public ConfigWrapperImpl(final JavaPlugin plugin,
+                             final String fileName,
+                             final Class<T> configClass) {
         this(plugin, fileName, configClass, ConfigFormat.HOCON);
     }
 
     // Constructor
-    public ObjectConfigWrapper(final JavaPlugin plugin,
-                               final String fileName,
-                               final Class<T> configClass,
-                               final ConfigFormat format) {
+    public ConfigWrapperImpl(final JavaPlugin plugin,
+                             final String fileName,
+                             final Class<T> configClass,
+                             final ConfigFormat format) {
         this.plugin = plugin;
         this.fileName = fileName;
         this.configClass = configClass;

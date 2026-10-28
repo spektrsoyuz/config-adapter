@@ -6,7 +6,7 @@ package com.spektrsoyuz.configadapter;
 import com.spektrsoyuz.configadapter.mock.MessageConfig;
 import com.spektrsoyuz.configadapter.type.Message;
 import com.spektrsoyuz.configadapter.type.MessageList;
-import com.spektrsoyuz.configadapter.wrapper.ObjectConfigWrapper;
+import com.spektrsoyuz.configadapter.wrapper.ConfigWrapperImpl;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -114,8 +114,8 @@ class MessageTest {
                 ]
                 """);
 
-        final ObjectConfigWrapper<MessageConfig> wrapper =
-                new ObjectConfigWrapper<>(this.plugin, "messages.conf", MessageConfig.class);
+        final ConfigWrapperImpl<MessageConfig> wrapper =
+                new ConfigWrapperImpl<>(this.plugin, "messages.conf", MessageConfig.class);
         wrapper.load();
 
         assertNotNull(wrapper.getConfig());
@@ -137,8 +137,8 @@ class MessageTest {
 
     @Test
     void testDefaultMappedPrefixResolved() {
-        final ObjectConfigWrapper<MessageConfig> wrapper =
-                new ObjectConfigWrapper<>(this.plugin, "messages.conf", MessageConfig.class);
+        final ConfigWrapperImpl<MessageConfig> wrapper =
+                new ConfigWrapperImpl<>(this.plugin, "messages.conf", MessageConfig.class);
         wrapper.load();
 
         assertNotNull(wrapper.getConfig());

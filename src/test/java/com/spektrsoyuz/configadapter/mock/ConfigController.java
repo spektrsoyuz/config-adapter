@@ -20,8 +20,8 @@ public final class ConfigController extends AbstractConfigController {
 
     @Override
     public void init() {
-        this.configManager.addConfig("config.conf");
-        this.configManager.addConfig("messages.conf");
+        this.configManager.addConfig("config.conf", PrimaryConfig.class);
+        this.configManager.addConfig("messages.conf", MessageConfig.class);
 
         this.configManager.load();
     }
