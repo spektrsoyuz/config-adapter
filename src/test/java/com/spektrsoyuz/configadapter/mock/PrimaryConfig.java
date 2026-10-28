@@ -21,4 +21,6 @@ public final class PrimaryConfig {
 
     private String name = "default";
 
+    private boolean enabled = true;
+
 }

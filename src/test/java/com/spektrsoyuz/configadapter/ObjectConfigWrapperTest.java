@@ -54,10 +54,12 @@ class ObjectConfigWrapperTest {
         assertNotNull(configWrapper.getNode());
         assertNotNull(configWrapper.getConfig());
         assertEquals("default", configWrapper.getConfig().name());
+        assertTrue(configWrapper.getConfig().enabled());
 
         final String content = Files.readString(this.tempDir.resolve("config.conf"));
         assertTrue(content.contains("name"));
         assertTrue(content.contains("default"));
+        assertTrue(content.contains("enabled"));
     }
 
     @Test
@@ -71,10 +73,31 @@ class ObjectConfigWrapperTest {
 
         assertNotNull(configWrapper.getConfig());
         assertEquals("default", configWrapper.getConfig().name());
+        assertTrue(configWrapper.getConfig().enabled());
 
         final String content = Files.readString(configPath);
         assertTrue(content.contains("name"));
         assertTrue(content.contains("default"));
+        assertTrue(content.contains("enabled"));
+    }
+
+    @Test
+    void testLoadAddsMissingEntries() throws IOException {
+        final Path configPath = this.tempDir.resolve("config.conf");
+        Files.writeString(configPath, "name=custom\n");
+
+        final ObjectConfigWrapper<PrimaryConfig> configWrapper =
+                new ObjectConfigWrapper<>(this.plugin, "config.conf", PrimaryConfig.class);
+        configWrapper.load();
+
+        assertEquals("custom", configWrapper.getConfig().name());
+        assertTrue(configWrapper.getConfig().enabled());
+
+        final String content = Files.readString(configPath);
+        assertTrue(content.contains("name"));
+        assertTrue(content.contains("custom"));
+        assertTrue(content.contains("enabled"));
+        assertFalse(content.contains("default"));
     }
 
     @Test

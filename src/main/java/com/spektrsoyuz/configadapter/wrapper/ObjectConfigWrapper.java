@@ -108,17 +108,22 @@ public final class ObjectConfigWrapper<T> implements ConfigFile {
             this.plugin.getComponentLogger().error("Failed to deserialize config file '{}'", this.fileName, e);
         }
 
-        // Write object defaults when the file was missing or blank
+        if (this.config == null) {
+            return;
+        }
+
+        // Round-trip so missing fields from the mapped type are written to disk
         if (useDefaults) {
             this.plugin.getComponentLogger().info("Saving default values to config file '{}'", this.fileName);
-            this.save();
+        }
 
-            // Re-deserialize so Message fields pick up a sibling prefix from the node
-            try {
-                this.config = this.node.get(this.configClass);
-            } catch (final SerializationException e) {
-                this.plugin.getComponentLogger().error("Failed to deserialize config file '{}'", this.fileName, e);
-            }
+        this.save();
+
+        // Re-deserialize so Message fields pick up a sibling prefix from the node
+        try {
+            this.config = this.node.get(this.configClass);
+        } catch (final SerializationException e) {
+            this.plugin.getComponentLogger().error("Failed to deserialize config file '{}'", this.fileName, e);
         }
     }
 
